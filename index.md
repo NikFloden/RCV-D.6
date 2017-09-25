@@ -1,37 +1,12 @@
-## Welcome to GitHub Pages
+## EGEN 310 'Cat's Conundrum' Group D6
 
-You can use the [editor on GitHub](https://github.com/NikFloden/RCV-D.6/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+Welcome to the website for EGEN 310 group D6's project! This website will document our progress, show who we are, and act as a repository for both code and data from our RCV. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Who are we?
 
-### Markdown
+We're a group of ~~4~~ 5 students in the college of engineering. 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+![Cool Robot](http://www.johnny-five.com/images/sc2/misc/j5_and_toronto.jpg)
 
-```markdown
-Syntax highlighted code block
+Whoa look at this robot, he's helpin wrangle some little doggies!
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/NikFloden/RCV-D.6/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
