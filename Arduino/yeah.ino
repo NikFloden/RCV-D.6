@@ -268,7 +268,7 @@ void loop()
         Serial.print("Z: "); Serial.print(aevent.acceleration.z, 4); Serial.print("  ");
         Serial.println("m/s^2");
         
-        //  this is code for making the velocity, however this suffers from drift, so fuck you.
+        //  this is code for making the velocity, however this suffers from drift.
         currTime = millis();
         velocity += (currAccel + prevAccel)/2*(currTime - prevTime)/1000; //1000 added to get the same units
         if(velocity > maxvelo){
