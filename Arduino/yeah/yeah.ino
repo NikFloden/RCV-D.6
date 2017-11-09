@@ -16,6 +16,8 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
+ 
+
 
 // BLE Service
 BLEDis  bledis;
@@ -136,12 +138,14 @@ void loop()
   accelmag.getEvent(&aevent, &mevent);
   currAccel = aevent.acceleration.x;
 
-  /* Display the results (speed is measured in rad/s) */
-  Serial.print("X: "); Serial.print(event.gyro.x); Serial.print("  ");
-  Serial.print("Y: "); Serial.print(event.gyro.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.gyro.z); Serial.print("  ");
-  Serial.println("rad/s ");
+  
 
+  /* Display the results (speed is measured in rad/s) */
+ String tilt = "Tilt: " + String(event.gyro.x) + " rad/s \n";
+ char msg[63];
+ tilt.toCharArray(msg, tilt.length()+1);
+
+  
   if(event.gyro.x > maxtilt){
     maxtilt = event.gyro.x;
   }
@@ -152,6 +156,9 @@ void loop()
   Serial.print("Y: "); Serial.print(aevent.acceleration.y, 4); Serial.print("  ");
   Serial.print("Z: "); Serial.print(aevent.acceleration.z, 4); Serial.print("  ");
   Serial.println("m/s^2");
+  String accel = "Accel: " + String(aevent.acceleration.x) + " m/s^2 \n";
+  char ac[63];
+  accel.toCharArray(ac, accel.length()+1);
 
 //  this is code for making the velocity, however this suffers from drift, so fuck you.
   currTime = millis();
@@ -163,28 +170,36 @@ void loop()
   prevAccel = currAccel;
   prevTime = currTime;
   Serial.print("Velocity is "); Serial.print(velocity, 4); 
+  String velo = "Velocity: " + String(velocity) + " m/s \n";
+  char vel[63];
+  velo.toCharArray(vel, velo.length()+1);
+  String dist = "Distance: " + String(speshdistance) + " m \n";
+  char dis[63];
+  dist.toCharArray(dis, dist.length()+1);
   // Forward data from HW Serial to BLEUART
-  while (Serial.available())
-  {
-    // Delay to wait for enough input, since we have a limited transmission buffer
-    delay(2);
 
-    uint8_t buf[64];
-    int count = Serial.readBytes(buf, sizeof(buf));
-    bleuart.write( buf, count );
-  }
+  // Delay to wait for enough input, since we have a limited transmission buffer
+  
 
-  // Forward from BLEUART to HW Serial
-  while ( bleuart.available() )
-  {
-    uint8_t ch;
-    ch = (uint8_t) bleuart.read();
-    Serial.write(ch);
-  }
+//  uint8_t tilt[64];
+//  int count = Serial.readBytes(tilt, sizeof(buf));
+  bleuart.write((uint8_t *)msg, strlen(msg));
+  bleuart.write((uint8_t *)ac, strlen(ac));
+  bleuart.write((uint8_t *)vel, strlen(vel));
+  bleuart.write((uint8_t *)dis, strlen(ac));
+
+
+//  // Forward from BLEUART to HW Serial
+//  while ( bleuart.available() )
+//  {
+//    uint8_t ch;
+//    ch = (uint8_t) bleuart.read();
+//    Serial.write(ch);
+//  }
 
   
   // Request CPU to enter low-power mode until an event/interrupt occurs
-  waitForEvent();
+  delay(5000);
 }
 
 void displaySensorDetails(void)
