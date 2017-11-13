@@ -1,3 +1,7 @@
+
+
+
+
 /*********************************************************************
  This is an example for our nRF52 based Bluefruit LE modules
 
@@ -16,6 +20,8 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
+#include <FlashAsEEPROM.h>
+#include <FlashStorage.h>
  
 
 
@@ -40,6 +46,9 @@ float totdistance = speshdistance / 2;
 float prevAccel = 0;
 unsigned long prevTime = millis();
 unsigned long currTime;
+
+FlashStorage(supertilt, float);
+FlashStorage(supervelo, float);
 
 
 void setup()
@@ -147,7 +156,9 @@ void loop()
 
   
   if(event.gyro.x > maxtilt){
+    //erase(supertilt);
     maxtilt = event.gyro.x;
+    supertilt.write(maxtilt);
   }
 
     /* Display the accel results (acceleration is measured in m/s^2) */
@@ -164,7 +175,9 @@ void loop()
   currTime = millis();
   velocity += (currAccel + prevAccel)/2*(currTime - prevTime)/1000; //1000 added to get the same units
   if(velocity > maxvelo){
+    //erase(supervelo);
     maxvelo = velocity;
+    supervelo.write(maxvelo);
   }
   speshdistance += velocity; 
   prevAccel = currAccel;
@@ -204,33 +217,36 @@ void loop()
 
 void displaySensorDetails(void)
 {
+  float deez = supervelo.read();
+  float nats = supertilt.read();
   sensor_t sensor;
   gyro.getSensor(&sensor);
   sensor_t accel, mag;
   accelmag.getSensor(&accel, &mag);
-  Serial.println("------------------------------------");
-  Serial.println("GYROSCOPE");
-  Serial.println("------------------------------------");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    0x"); Serial.println(sensor.sensor_id, HEX);
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" rad/s");
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" rad/s");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" rad/s");
-  Serial.println("------------------------------------");
-  Serial.println("");
-  Serial.println("------------------------------------");
-  Serial.println("ACCELEROMETER");
-  Serial.println("------------------------------------");
-  Serial.print  ("Sensor:       "); Serial.println(accel.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(accel.version);
-  Serial.print  ("Unique ID:    0x"); Serial.println(accel.sensor_id, HEX);
-  Serial.print  ("Min Delay:    "); Serial.print(accel.min_delay); Serial.println(" s");
-  Serial.print  ("Max Value:    "); Serial.print(accel.max_value, 4); Serial.println(" m/s^2");
-  Serial.print  ("Min Value:    "); Serial.print(accel.min_value, 4); Serial.println(" m/s^2");
-  Serial.print  ("Resolution:   "); Serial.print(accel.resolution, 8); Serial.println(" m/s^2");
-  Serial.println("------------------------------------");
-  Serial.println("");
+//  Serial.println("------------------------------------");
+//  Serial.println("GYROSCOPE");
+//  Serial.println("------------------------------------");
+//  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
+//  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
+//  Serial.print  ("Unique ID:    0x"); Serial.println(sensor.sensor_id, HEX);
+//  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" rad/s");
+//  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" rad/s");
+//  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" rad/s");
+//  Serial.println("------------------------------------");
+//  Serial.println("");
+//  Serial.println("------------------------------------");
+//  Serial.println("ACCELEROMETER");
+//  Serial.println("------------------------------------");
+//  Serial.print  ("Sensor:       "); Serial.println(accel.name);
+//  Serial.print  ("Driver Ver:   "); Serial.println(accel.version);
+//  Serial.print  ("Unique ID:    0x"); Serial.println(accel.sensor_id, HEX);
+//  Serial.print  ("Min Delay:    "); Serial.print(accel.min_delay); Serial.println(" s");
+//  Serial.print  ("Max Value:    "); Serial.print(accel.max_value, 4); Serial.println(" m/s^2");
+//  Serial.print  ("Min Value:    "); Serial.print(accel.min_value, 4); Serial.println(" m/s^2");
+//  Serial.print  ("Resolution:   "); Serial.print(accel.resolution, 8); Serial.println(" m/s^2");
+  Serial.println("Maximum Tilt Achieved: "); Serial.print(deez);
+  Serial.println("Maximum Velocity Achieved: "); Serial.print(nats);
+  //Serial.println("");
   delay(1000);
 }
 
