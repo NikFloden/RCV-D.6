@@ -20,8 +20,6 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
-#include <FlashAsEEPROM.h>
-#include <FlashStorage.h>
  
 
 
@@ -47,8 +45,7 @@ float prevAccel = 0;
 unsigned long prevTime = millis();
 unsigned long currTime;
 
-FlashStorage(supertilt, float);
-FlashStorage(supervelo, float);
+
 
 
 void setup()
@@ -158,7 +155,7 @@ void loop()
   if(event.gyro.x > maxtilt){
     //erase(supertilt);
     maxtilt = event.gyro.x;
-    supertilt.write(maxtilt);
+  
   }
 
     /* Display the accel results (acceleration is measured in m/s^2) */
@@ -171,13 +168,12 @@ void loop()
   char ac[63];
   accel.toCharArray(ac, accel.length()+1);
 
-//  this is code for making the velocity, however this suffers from drift, so fuck you.
+//  this is code for making the velocity, however this suffers from drift
   currTime = millis();
-  velocity += (currAccel + prevAccel)/2*(currTime - prevTime)/1000; //1000 added to get the same units
+  velocity += (currAccel + prevAccel)/2*(currTime - prevTime)/1000; //100 added to get the same units
   if(velocity > maxvelo){
     //erase(supervelo);
     maxvelo = velocity;
-    supervelo.write(maxvelo);
   }
   speshdistance += velocity; 
   prevAccel = currAccel;
@@ -188,6 +184,9 @@ void loop()
   velo.toCharArray(vel, velo.length()+1);
   String dist = "Distance: " + String(speshdistance) + " m \n";
   char dis[63];
+  String space = "\n";
+  char spac[63];
+  space.toCharArray(spac, space.length()+1);
   dist.toCharArray(dis, dist.length()+1);
   // Forward data from HW Serial to BLEUART
 
@@ -199,7 +198,10 @@ void loop()
   bleuart.write((uint8_t *)msg, strlen(msg));
   bleuart.write((uint8_t *)ac, strlen(ac));
   bleuart.write((uint8_t *)vel, strlen(vel));
-  bleuart.write((uint8_t *)dis, strlen(ac));
+  bleuart.write((uint8_t *)dis, strlen(dis));
+  bleuart.write((uint8_t *)spac, strlen(spac));
+  bleuart.write((uint8_t *)spac, strlen(spac));
+  bleuart.write((uint8_t *)spac, strlen(spac));
 
 
 //  // Forward from BLEUART to HW Serial
@@ -212,13 +214,11 @@ void loop()
 
   
   // Request CPU to enter low-power mode until an event/interrupt occurs
-  delay(5000);
+  delay(1000);
 }
 
 void displaySensorDetails(void)
 {
-  float deez = supervelo.read();
-  float nats = supertilt.read();
   sensor_t sensor;
   gyro.getSensor(&sensor);
   sensor_t accel, mag;
@@ -244,8 +244,7 @@ void displaySensorDetails(void)
 //  Serial.print  ("Max Value:    "); Serial.print(accel.max_value, 4); Serial.println(" m/s^2");
 //  Serial.print  ("Min Value:    "); Serial.print(accel.min_value, 4); Serial.println(" m/s^2");
 //  Serial.print  ("Resolution:   "); Serial.print(accel.resolution, 8); Serial.println(" m/s^2");
-  Serial.println("Maximum Tilt Achieved: "); Serial.print(deez);
-  Serial.println("Maximum Velocity Achieved: "); Serial.print(nats);
+
   //Serial.println("");
   delay(1000);
 }
